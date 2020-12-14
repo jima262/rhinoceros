@@ -1,2 +1,6 @@
 # rhinoceros
-note of cypress.io
+## 本プロジェクトの目的
+
+E2Eテスト自動化ツール[cypress](cypress.io)の検証を行うことを目的です。
+
+いくつかのサイトにおいて、実際にcypressを実行し、業務での運用に向けて準備を行います。
