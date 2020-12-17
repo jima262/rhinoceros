@@ -33,6 +33,10 @@ module.exports = {
             name: `GitHub`,
             url: `https://github.com/jima262/rhinoceros`,
           },
+          {
+            name: `Zenn`,
+            url: `https://zenn.dev/jima262`,
+          },
         ],
       },
     },
