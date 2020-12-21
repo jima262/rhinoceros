@@ -7,81 +7,75 @@ tags:
 ---
 
 ```js
-/// <reference types="cypress" />
-
-// テストの名称
-context('Actions', () => {
-
-  // このテストのスタートでかならずアクセスするURL
-  beforeEach(() => {
-    cy.visit('https://example.cypress.io/commands/actions')
-  })
-
-  // ''内は1つのspecの名前
   it('.type() - type into a DOM element', () => {    
-    // https://on.cypress.io/type
     cy.get('.action-email')
       .type('fake@email.com').should('have.value', 'fake@email.com')
-
-      // .type() with 特別な文字
       .type('{leftarrow}{rightarrow}{uparrow}{downarrow}')
-      // .type() with キーボードのコマンド
       .type('{del}{selectall}{backspace}')
-
-      // .type() with 修飾キー
       .type('{alt}{option}') //these are equivalent
       .type('{ctrl}{control}') //these are equivalent
       .type('{meta}{command}{cmd}') //these are equivalent
       .type('{shift}')
-
-      // Delay each keypress by 0.1 sec
       .type('slow.typing@email.com', { delay: 100 })
-      // 入力した内容のチェック
       .should('have.value', 'slow.typing@email.com')
 
     cy.get('.action-disabled')
-      // disabledだけど入力してチェック出来る
       .type('disabled error checking', { force: true })
       .should('have.value', 'disabled error checking')
   })
+```
+基本の書き方です。  
+inputエリアを指定し、文字列を記入します。  
+その後、正しく入力されていることを確認しています。  
+事前に const:~~;  といった形で文字列を定義しておけば、テキストエリアのテストで使いまわしてテストをすることもできそうです。
 
+後半の、force:true を指定することで、本来入力できないエリアにも文字を入力することができます。どう使うのがいいですかね。
+
+```js
   it('.focus() - focus on a DOM element', () => {
-    // https://on.cypress.io/focus
     cy.get('.action-focus').focus()
-      //class名が正しいことを確認
       .should('have.class', 'focus')
-      //getした要素の一つ前、属性 styleを確認
       .prev().should('have.attr', 'style', 'color: orange;')
   })
+```
+指定した要素のclass名をチェックする事ができます。  
+should は頻繁に使うので、マスターしていきたいですね。  
 
+```js
   it('.blur() - blur off a DOM element', () => {
-    // https://on.cypress.io/blur
-    // typeしたのち、blur（フォーカスを外す）
     cy.get('.action-blur').type('About to blur').blur()
       .should('have.class', 'error')
       .prev().should('have.attr', 'style', 'color: red;')
   })
+```
+インプットエリアのフォーカスを外した時の挙動確認です。　　
+今回は、フォーカスを外した時点でエラー時の表示となるため、クラス名が正しくerrorとなっているかどうかを確認しています。
 
+これを活用すれば、簡単なエラー時の表示確認をすることができますね。
+
+
+```js
   it('.clear() - clears an input or textarea element', () => {
-    // https://on.cypress.io/clear
     cy.get('.action-clear').type('Clear this text')
       .should('have.value', 'Clear this text')
-      // 空にする
       .clear()
       .should('have.value', '')
   })
-
+```
+これは、読んで字の如く入力内容をからにするコマンドです。
+```js
   it('.submit() - submit a form', () => {
-    // https://on.cypress.io/submit
     cy.get('.action-form')
       .find('[type="text"]').type('HALFOFF')
 
     cy.get('.action-form').submit()
-      // 次のprevの反対 next
-      // test area ではないので、have.value ではなく contain
       .next().should('contain', 'Your form has been submitted!')
   })
+```
+ボタンを押してボタン下にテキストが表示される挙動について確認しています。　　
+ボタンをおし（submit）、その下に期待しているテキストが表示されていることを確認します。
 
+```js
   it('.click() - click on a DOM element', () => {
     // https://on.cypress.io/click
     cy.get('.action-btn').click()
@@ -101,7 +95,6 @@ context('Actions', () => {
 
     // clicking in the center of the element is the default
     cy.get('#action-canvas').click()
-
     cy.get('#action-canvas').click('topLeft')
     cy.get('#action-canvas').click('top')
     cy.get('#action-canvas').click('topRight')
@@ -123,21 +116,21 @@ context('Actions', () => {
       .click(150, 185)
       .click(170, 165)
 
-    // 複数の要素をクリック by passing multiple: true
     cy.get('.action-labels>.label').click({ multiple: true })
 
-    // 押す前にエラーかどうか（おせないかどうか）を無視
     cy.get('.action-opacity>.btn').click({ force: true })
   })
-
+```
+任意の箇所をクリックすることができます。　　
+指定した　`.action-labels>.label`は複数ありますが、`multiple:true`とすることで、全ての箇所をクリックすることができます。
+```js
   it('.dblclick() - double click on a DOM element', () => {
-    // https://on.cypress.io/dblclick
-
-    // ダブルクリックすると、もともとのclassがなくなる
     cy.get('.action-div').dblclick().should('not.be.visible')
     cy.get('.action-input-hidden').should('be.visible')
   })
-
+```
+ダブルクリックの確認。今回は、ダブルクリックをした場合に、要素が非表示となることを確認しています。
+```js
   it('.rightclick() - right click on a DOM element', () => {
     // https://on.cypress.io/rightclick
 
@@ -145,7 +138,8 @@ context('Actions', () => {
     cy.get('.rightclick-action-div').rightclick().should('not.be.visible')
     cy.get('.rightclick-action-input-hidden').should('be.visible')
   })
-
+```
+```js
   it('.check() - check a checkbox or radio element', () => {
     // https://on.cypress.io/check
 
@@ -172,7 +166,8 @@ context('Actions', () => {
     cy.get('.action-radios [type="radio"]')
       .check('radio3', { force: true }).should('be.checked')
   })
-
+```
+```js
   it('.uncheck() - uncheck a checkbox element', () => {
     // https://on.cypress.io/uncheck
 
@@ -196,7 +191,8 @@ context('Actions', () => {
     cy.get('.action-check [disabled]')
       .uncheck({ force: true }).should('not.be.checked')
   })
-
+```
+```js
   it('.select() - select an option in a <select> element', () => {
     // https://on.cypress.io/select
 
@@ -230,7 +226,8 @@ context('Actions', () => {
     cy.get('.action-select-multiple')
       .invoke('val').should('include', 'fr-oranges')
   })
-
+```
+```js
   it('.scrollIntoView() - scroll an element into view', () => {
     // https://on.cypress.io/scrollintoview
 
@@ -259,7 +256,8 @@ context('Actions', () => {
     cy.get('#scroll-both button').scrollIntoView()
       .should('be.visible')
   })
-
+```
+```js
   it('.trigger() - trigger an event on a DOM element', () => {
     // https://on.cypress.io/trigger
 
@@ -275,7 +273,8 @@ context('Actions', () => {
       .get('input[type=range]').siblings('p')
       .should('have.text', '25')
   })
-
+```
+```js
   it('cy.scrollTo() - scroll the window or element to a position', () => {
     // https://on.cypress.io/scrollTo
 
@@ -313,5 +312,4 @@ context('Actions', () => {
     cy.get('#scrollable-both').scrollTo('center', { duration: 2000 })
   })
 })
-
 ```
