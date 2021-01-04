@@ -1,0 +1,40 @@
+---
+title: "example/aliasing.spec.jsについて"
+date: 2021-01-04
+slug: "/example-aliasing"
+tags:
+  - "examples"
+---
+
+```js
+  it('.as() - alias a DOM element for later use', () => {
+    cy.get('.as-table')
+      .find('tbody>tr').first()
+      .find('td').first()
+      .find('button').as('firstBtn')
+
+    cy.get('@firstBtn').click()
+
+    cy.get('@firstBtn')
+      .should('have.class', 'btn-success')
+      .and('contain', 'Changed')
+  })
+```
+ボタンを指定して、`.as()`でエイリアスを割り当て、後で使用できるようになります。  
+```js
+  it('.as() - alias a route for later use', () => {
+    cy.intercept('GET', '**/comments/*').as('getComment')
+
+    cy.get('.network-btn').click()
+
+    cy.wait('@getComment').its('response.statusCode').should('eq', 200)
+  })
+```
+Get Cooment ボタンを押したさい、`GET`で以下のリクエストが送信されています。  
+```
+:method: GET
+:scheme: https
+:authority: jsonplaceholder.cypress.io
+:path: /comments/1
+```
+このリクエストをエイリアスに割り当てた上で、リクエストのステータスが200となることを確認しています。
