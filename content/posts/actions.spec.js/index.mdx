@@ -25,11 +25,10 @@ tags:
   })
 ```
 基本の書き方です。  
-inputエリアを指定し、文字列を記入します。  
-その後、正しく入力されていることを確認しています。  
-事前に const:~~;  といった形で文字列を定義しておけば、テキストエリアのテストで使いまわしてテストをすることもできそうです。
+inputエリアを指定し、文字列を記入し、その後、正しく入力されていることを確認しています。  
+事前に `const ~~;` といった形で文字列を定義しておけば、テキストエリアのテストで使いまわしてテストをすることもできそうです。
 
-後半の、force:true を指定することで、本来入力できないエリアにも文字を入力することができます。どう使うのがいいですかね。
+後半の `force:true` を指定することで、本来入力できないエリアにも文字を入力することができます。どう使うのがいいですかね。
 
 ```js
   it('.focus() - focus on a DOM element', () => {
@@ -39,7 +38,7 @@ inputエリアを指定し、文字列を記入します。
   })
 ```
 指定した要素のclass名をチェックする事ができます。  
-should は頻繁に使うので、マスターしていきたいですね。  
+`should` は頻繁に使うので、マスターしていきたいですね。  
 
 ```js
   it('.blur() - blur off a DOM element', () => {
@@ -48,8 +47,8 @@ should は頻繁に使うので、マスターしていきたいですね。
       .prev().should('have.attr', 'style', 'color: red;')
   })
 ```
-インプットエリアのフォーカスを外した時の挙動確認です。　　
-今回は、フォーカスを外した時点でエラー時の表示となるため、クラス名が正しくerrorとなっているかどうかを確認しています。
+インプットエリアのフォーカスを外した時の挙動確認です。  
+ここでは、フォーカスを外した時点でエラー時の表示となるため、クラス名が正しくerrorとなっているかどうかを確認しています。
 
 これを活用すれば、簡単なエラー時の表示確認をすることができますね。
 
@@ -62,7 +61,7 @@ should は頻繁に使うので、マスターしていきたいですね。
       .should('have.value', '')
   })
 ```
-これは、読んで字の如く入力内容をからにするコマンドです。
+これは、読んで字の如く入力内容を空にするコマンドです。
 ```js
   it('.submit() - submit a form', () => {
     cy.get('.action-form')
@@ -72,12 +71,11 @@ should は頻繁に使うので、マスターしていきたいですね。
       .next().should('contain', 'Your form has been submitted!')
   })
 ```
-ボタンを押してボタン下にテキストが表示される挙動について確認しています。　　
-ボタンをおし（submit）、その下に期待しているテキストが表示されていることを確認します。
+指定した領域内のボタンを押して、サブミットするコマンド。  
+ここではボタンを押し、その下に期待しているテキストが表示されていることを確認します。
 
 ```js
   it('.click() - click on a DOM element', () => {
-    // https://on.cypress.io/click
     cy.get('.action-btn').click()
 
     // You can click on 9 specific positions of an element:
@@ -104,9 +102,6 @@ should は頻繁に使うので、マスターしていきたいですね。
     cy.get('#action-canvas').click('bottom')
     cy.get('#action-canvas').click('bottomRight')
 
-    // .click() accepts an x and y coordinate
-    // that controls where the click occurs :)
-
     cy.get('#action-canvas')
       .click(80, 75) // click 80px on x coord and 75px on y coord
       .click(170, 75)
@@ -117,34 +112,31 @@ should は頻繁に使うので、マスターしていきたいですね。
       .click(170, 165)
 
     cy.get('.action-labels>.label').click({ multiple: true })
-
     cy.get('.action-opacity>.btn').click({ force: true })
   })
 ```
-任意の箇所をクリックすることができます。　　
-指定した　`.action-labels>.label`は複数ありますが、`multiple:true`とすることで、全ての箇所をクリックすることができます。
+任意の箇所をクリックすることができます。  
+場所の指定も、座標の指定もできるようです。どこで活用できるかあまりイメージは湧かないですが、、  
+
+指定している `.action-labels>.label` は画面内に複数あるため、 `multiple:true` とすることで、全ての箇所をクリックすることができます。
 ```js
   it('.dblclick() - double click on a DOM element', () => {
     cy.get('.action-div').dblclick().should('not.be.visible')
     cy.get('.action-input-hidden').should('be.visible')
   })
 ```
-ダブルクリックの確認。今回は、ダブルクリックをした場合に、要素が非表示となることを確認しています。
+ダブルクリックの確認です。  
+ここでは、ダブルクリックをした場合に、要素が非表示となることを確認しています。
 ```js
   it('.rightclick() - right click on a DOM element', () => {
-    // https://on.cypress.io/rightclick
-
-    // 右クリックすると、もともとのclassがなくなる
     cy.get('.rightclick-action-div').rightclick().should('not.be.visible')
     cy.get('.rightclick-action-input-hidden').should('be.visible')
   })
 ```
+右クリックの確認です。  
+ここでは、右クリックをした場合に、要素が非表示となることを確認しています。
 ```js
   it('.check() - check a checkbox or radio element', () => {
-    // https://on.cypress.io/check
-
-    // By default, .check() will check all
-    // matching checkbox or radio elements in succession, one after another
     cy.get('.action-checkboxes [type="checkbox"]').not('[disabled]')
       .check().should('be.checked')
 
@@ -167,12 +159,11 @@ should は頻繁に使うので、マスターしていきたいですね。
       .check('radio3', { force: true }).should('be.checked')
   })
 ```
+`check()` で、チェックボックスやラジオボタンをチェックをつけることができます。  
+その際、ボタンを指定したり、複数指定することも可能です。
 ```js
   it('.uncheck() - uncheck a checkbox element', () => {
-    // https://on.cypress.io/uncheck
 
-    // By default, .uncheck() will uncheck all matching
-    // checkbox elements in succession, one after another
     cy.get('.action-check [type="checkbox"]')
       .not('[disabled]')
       .uncheck().should('not.be.checked')
@@ -192,9 +183,10 @@ should は頻繁に使うので、マスターしていきたいですね。
       .uncheck({ force: true }).should('not.be.checked')
   })
 ```
+`check()`の逆で、チェックボックスやラジオボタンをチェックを外すことができます。  
+その際、ボタンを指定したり、複数指定することも可能です。
 ```js
   it('.select() - select an option in a <select> element', () => {
-    // https://on.cypress.io/select
 
     // at first, no option should be selected
     cy.get('.action-select')
@@ -227,6 +219,10 @@ should は頻繁に使うので、マスターしていきたいですね。
       .invoke('val').should('include', 'fr-oranges')
   })
 ```
+セレクトボックスの確認に使うことのできる`select()`です。  
+これも必ず覚えておきたいです。
+
+複数項目選択し、完全に一致を確認する際は、 `.invoke('val')` と `deep.equal` を忘れずに。
 ```js
   it('.scrollIntoView() - scroll an element into view', () => {
     // https://on.cypress.io/scrollintoview
